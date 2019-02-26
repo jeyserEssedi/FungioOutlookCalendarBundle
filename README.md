@@ -11,6 +11,8 @@ Go to the application registration portal : https://apps.dev.microsoft.com
 
 Click on "Add an app" and put a name to your app.
 
+If you add platform native in settings go to Symfony 4 explain.
+
 Click on "Generate New Password" and copy the password
 
 
@@ -70,3 +72,23 @@ if ($session->has('fungio_outlook_calendar_access_token')) {
 
 $events = $outlookCalendar->getEventsForDate($session->get('fungio_outlook_calendar_access_token'), new \DateTime('now');
 ```
+##For Symfony 4 
+
+Add var CLIENT_ID and CLIENT_SECRET to env config
+
+Added new attribute to OutlookCalendar class native references to Microsoft App settings
+platform added is native.
+
+_
+##Example Symfony 4
+``` php
+<?php
+ $outlookClient= new \Fungio\OutlookCalendarBundle\Service\OutlookCalendar();
+ $outlookClient->setNative();
+ $token=$outlookClient->getTokenFromAuthCode($authcode, $redirect_uri);
+``` 
+ ##Credits
+ Create by Fungio fungio76@gmail.com
+ 
+ Symfony 4 Fork jeyserEssedi jeyser@essedi.es
+ 

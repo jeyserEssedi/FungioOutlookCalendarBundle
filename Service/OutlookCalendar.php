@@ -50,6 +50,8 @@ class OutlookCalendar
      */
     protected $scopes = "";
 
+
+
     /**
      * @var array
      */
@@ -132,6 +134,15 @@ class OutlookCalendar
      */
     protected $enableFiddler = false;
 
+    /**
+     * Set this to true if you app settings have native platform added
+     * @var bool
+     */
+    protected $native= false;
+
+    public function setNative(){
+        $this->native=true;
+    }
     /**
      * @param string $clientId
      */
@@ -216,7 +227,14 @@ class OutlookCalendar
     public function getTokenFromAuthCode($authCode, $redirectUri)
     {
         // Build the form data to post to the OAuth2 token endpoint
-        $token_request_data = [
+        $token_request_data_native = [
+            "grant_type"    => "authorization_code",
+            "code"          => $authCode,
+            "redirect_uri"  => $redirectUri,
+            "client_id"     => $this->clientId,
+            "scope"         => $this->scopes
+        ];
+        $token_request_data= [
             "grant_type"    => "authorization_code",
             "code"          => $authCode,
             "redirect_uri"  => $redirectUri,
@@ -227,7 +245,7 @@ class OutlookCalendar
 
         // Calling http_build_query is important to get the data
         // formatted as Azure expects.
-        $token_request_body = http_build_query($token_request_data);
+        $token_request_body = http_build_query($this->native?$token_request_data_native:$token_request_data);
 
         $curl = curl_init($this->authority . $this->tokenUrl);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -291,8 +309,14 @@ class OutlookCalendar
             "client_id"     => $this->clientId,
             "client_secret" => $this->clientSecret
         ];
-
-        $token_request_body = http_build_query($token_request_data);
+        $token_request_data_native = [
+            "grant_type"    => "refresh_token",
+            "refresh_token" => $refreshToken,
+            "redirect_uri"  => $redirectUri,
+            "scope"         => $this->scopes,
+            "client_id"     => $this->clientId,
+        ];
+        $token_request_body = http_build_query($this->native?$token_request_data_native:$token_request_data);
 
         $curl = curl_init($this->authority . $this->tokenUrl);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
