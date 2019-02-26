@@ -51,7 +51,6 @@ class OutlookCalendar
     protected $scopes = "";
 
 
-
     /**
      * @var array
      */
@@ -138,11 +137,13 @@ class OutlookCalendar
      * Set this to true if you app settings have native platform added
      * @var bool
      */
-    protected $native= false;
+    protected $native = false;
 
-    public function setNative(){
-        $this->native=true;
+    public function setNative()
+    {
+        $this->native = true;
     }
+
     /**
      * @param string $clientId
      */
@@ -228,24 +229,24 @@ class OutlookCalendar
     {
         // Build the form data to post to the OAuth2 token endpoint
         $token_request_data_native = [
-            "grant_type"    => "authorization_code",
-            "code"          => $authCode,
-            "redirect_uri"  => $redirectUri,
-            "client_id"     => $this->clientId,
-            "scope"         => $this->scopes
+            "grant_type" => "authorization_code",
+            "code" => $authCode,
+            "redirect_uri" => $redirectUri,
+            "client_id" => $this->clientId,
+            "scope" => $this->scopes
         ];
-        $token_request_data= [
-            "grant_type"    => "authorization_code",
-            "code"          => $authCode,
-            "redirect_uri"  => $redirectUri,
-            "client_id"     => $this->clientId,
+        $token_request_data = [
+            "grant_type" => "authorization_code",
+            "code" => $authCode,
+            "redirect_uri" => $redirectUri,
+            "client_id" => $this->clientId,
             "client_secret" => $this->clientSecret,
-            "scope"         => $this->scopes
+            "scope" => $this->scopes
         ];
 
         // Calling http_build_query is important to get the data
         // formatted as Azure expects.
-        $token_request_body = http_build_query($this->native?$token_request_data_native:$token_request_data);
+        $token_request_body = http_build_query($this->native ? $token_request_data_native : $token_request_data);
 
         $curl = curl_init($this->authority . $this->tokenUrl);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -298,21 +299,21 @@ class OutlookCalendar
     {
         // Build the form data to post to the OAuth2 token endpoint
         $token_request_data = [
-            "grant_type"    => "refresh_token",
+            "grant_type" => "refresh_token",
             "refresh_token" => $refreshToken,
-            "redirect_uri"  => $redirectUri,
-            "scope"         => $this->scopes,
-            "client_id"     => $this->clientId,
+            "redirect_uri" => $redirectUri,
+            "scope" => $this->scopes,
+            "client_id" => $this->clientId,
             "client_secret" => $this->clientSecret
         ];
         $token_request_data_native = [
-            "grant_type"    => "refresh_token",
+            "grant_type" => "refresh_token",
             "refresh_token" => $refreshToken,
-            "redirect_uri"  => $redirectUri,
-            "scope"         => $this->scopes,
-            "client_id"     => $this->clientId,
+            "redirect_uri" => $redirectUri,
+            "scope" => $this->scopes,
+            "client_id" => $this->clientId,
         ];
-        $token_request_body = http_build_query($this->native?$token_request_data_native:$token_request_data);
+        $token_request_body = http_build_query($this->native ? $token_request_data_native : $token_request_data);
 
         $curl = curl_init($this->authority . $this->tokenUrl);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -332,7 +333,7 @@ class OutlookCalendar
         if ($this->isFailure($httpCode)) {
             return [
                 'errorNumber' => $httpCode,
-                'error'       => 'Token request returned HTTP error ' . $httpCode
+                'error' => 'Token request returned HTTP error ' . $httpCode
             ];
         }
 
@@ -344,7 +345,7 @@ class OutlookCalendar
 
             return [
                 'errorNumber' => $curl_errno,
-                'error'       => $msg
+                'error' => $msg
             ];
         }
 
@@ -439,14 +440,14 @@ class OutlookCalendar
     }
 
     /**
-     * @param string    $access_token
-     * @param string    $subject
-     * @param string    $content
+     * @param string $access_token
+     * @param string $subject
+     * @param string $content
      * @param \DateTime $startTime
      * @param \DateTime $endTime
-     * @param string    $attendeeString
-     * @param string    $location
-     * @param boolean   $allDay
+     * @param string $attendeeString
+     * @param string $location
+     * @param boolean $allDay
      *
      * @return array|mixed
      * @throws \Exception
@@ -467,17 +468,17 @@ class OutlookCalendar
         // Generate the JSON payload
         $event = [
             "Subject" => $subject,
-            "Start"   => [
+            "Start" => [
                 "DateTime" => $startTime->format('Y-m-d\TH:i:s\Z'),
                 "TimeZone" => $tz->getName()
             ],
-            "End"     => [
+            "End" => [
                 "DateTime" => $endTime->format('Y-m-d\TH:i:s\Z'),
                 "TimeZone" => $tz->getName()
             ],
-            "Body"    => [
+            "Body" => [
                 "ContentType" => "HTML",
-                "Content"     => $content
+                "Content" => $content
             ]
         ];
         if ($location != "") {
@@ -498,7 +499,7 @@ class OutlookCalendar
                         "EmailAddress" => [
                             "Address" => $address
                         ],
-                        "Type"         => "Required"
+                        "Type" => "Required"
                     ];
 
                     $attendees[] = $attendee;
@@ -531,9 +532,9 @@ class OutlookCalendar
      * @param           $content
      * @param \DateTime $startTime
      * @param \DateTime $endTime
-     * @param string    $attendeeString
-     * @param string    $location
-     * @param bool      $allDay
+     * @param string $attendeeString
+     * @param string $location
+     * @param bool $allDay
      *
      * @return array|mixed
      */
@@ -553,17 +554,17 @@ class OutlookCalendar
         // Generate the JSON payload
         $event = [
             "Subject" => $subject,
-            "Start"   => [
+            "Start" => [
                 "DateTime" => $startTime->format('Y-m-d\TH:i:s\Z'),
                 "TimeZone" => $tz->getName()
             ],
-            "End"     => [
+            "End" => [
                 "DateTime" => $endTime->format('Y-m-d\TH:i:s\Z'),
                 "TimeZone" => $tz->getName()
             ],
-            "Body"    => [
+            "Body" => [
                 "ContentType" => "HTML",
-                "Content"     => $content
+                "Content" => $content
             ]
         ];
         if ($location != "") {
@@ -584,7 +585,7 @@ class OutlookCalendar
                         "EmailAddress" => [
                             "Address" => $address
                         ],
-                        "Type"         => "Required"
+                        "Type" => "Required"
                     ];
 
                     $attendees[] = $attendee;
@@ -608,6 +609,20 @@ class OutlookCalendar
         } else {
             return $response;
         }
+    }
+
+    /**
+     * @param $accessToken
+     * @param $eventId
+     *
+     * @return $response
+     */
+
+    public function deleteEvent($accessToken, $eventId)
+    {
+        $calendarViewUrl = $this->outlookApiUrl . "/me/events/" . $eventId;
+        $response = $this->makeApiCall($accessToken, "DELETE", $calendarViewUrl);
+        return $response;
     }
 
     /**
@@ -701,7 +716,7 @@ class OutlookCalendar
         if ($httpCode >= 400) {
             return [
                 'errorNumber' => $httpCode,
-                'error'       => 'Request returned HTTP error ' . $httpCode
+                'error' => 'Request returned HTTP error ' . $httpCode
             ];
         }
 
@@ -714,7 +729,7 @@ class OutlookCalendar
 
             return [
                 'errorNumber' => $curl_errno,
-                'error'       => $msg
+                'error' => $msg
             ];
         } else {
             curl_close($curl);
