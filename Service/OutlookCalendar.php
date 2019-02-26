@@ -261,24 +261,20 @@ class OutlookCalendar
 
         $response = curl_exec($curl);
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
         if ($this->isFailure($httpCode)) {
-            return [
-                'errorNumber' => $httpCode,
-                'error'       => 'Token request returned HTTP error ' . $httpCode
-            ];
-        }
+            // Check error
+            $curl_errno = curl_errno($curl);
+            $curl_err = curl_error($curl);
+            if ($curl_errno) {
+                $msg = $curl_errno . ": " . $curl_err;
 
-        // Check error
-        $curl_errno = curl_errno($curl);
-        $curl_err = curl_error($curl);
-        if ($curl_errno) {
-            $msg = $curl_errno . ": " . $curl_err;
+                return [
+                    'code' => $httpCode,
+                    'errorNumber' => $curl_errno,
+                    'error' => $msg
+                ];
+            }
 
-            return [
-                'errorNumber' => $curl_errno,
-                'error'       => $msg
-            ];
         }
 
         curl_close($curl);
